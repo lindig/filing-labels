@@ -1,7 +1,7 @@
 
 # Print Filing Labels
 
-This is a small PostScript program that prints filinig labels 58mm x
+This is a small PostScript program that prints filing labels 58mm x
 18mm arranged in a table of 3 by 15 labels per DIN A4 page. Each label
 is printed with two numbers like in "17-1234" where the second number
 is a sequence number.

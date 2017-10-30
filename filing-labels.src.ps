@@ -1,0 +1,189 @@
+%!PS-Adobe-2.0
+%
+% (c) 2017 Christian Lindig lindig@gmail.com
+%
+% Filing labels for Köpper & Partner - 
+
+/year   17    def
+/start  1234  def % first label is 17-1234, change as needed
+/pages  2     def % number of pages to be printed
+
+/in     { 72 mul }      bind def
+/cm     { 28.3465 mul } bind def
+/mm     { cm 10 div }   bind def
+
+% print cut marks when true - useful for debugging
+/cutmarks       true def
+
+% page size
+/pagedim        [210 mm 297 mm] def % DIN A4
+/pagewidth      { pagedim 0 get } bind def
+/pageheight     { pagedim 1 get } bind def
+
+% size of a label
+/hsize      58 mm def
+/vsize      18 mm def
+
+% rows and columns on page, gaps between rows and columns
+/rows       15 def
+/columns    3  def
+/hgap       0 mm def
+/vgap       0 mm def
+
+% left and bottom margin on page. This assumes the block of labels
+% is centered on a page. If not, use explicit dimentsions like 2mm.
+/lmargin
+    pagewidth columns hsize mul sub columns 1 sub hgap mul sub 2 div def
+/bmargin
+    pageheight rows vsize mul sub rows 1 sub vgap mul sub 2 div def
+
+% left and right margin on a label. I'm using this for the content of a
+% label.
+/left       20 def
+/right      hsize 20 sub def
+/center     hsize 2 div def
+
+% colors
+/setcmyk  { aload pop setcmykcolor } bind def
+/black    [ 0.00 0.00 0.00 1.00 ] def     % black
+/grey     [ 0.00 0.00 0.00 0.20 ] def     % grey
+/company  [ 0.22 0.00 0.86 0.20 ] def     
+
+
+% counts labels - used for positioning
+/count      0 def
+%
+
+/recode {
+    findfont
+    dup maxlength dict begin
+    {
+        1 index /FID ne { def } { pop pop } ifelse
+    } forall
+    /Encoding exch def
+    dup /FontName exch def
+    currentdict end definefont pop
+} bind def
+
+%%@Fonts
+
+% fonts in Latin 1 encoding
+/H  ISOLatin1Encoding /Helvetica recode
+/HB ISOLatin1Encoding /Helvetica-Bold recode
+/HI ISOLatin1Encoding /Helvetica-Oblique recode
+/FR ISOLatin1Encoding /FiraSans-Regular recode
+/FM ISOLatin1Encoding /FiraSans-Medium recode
+/FB ISOLatin1Encoding /FiraSans-Bold recode
+/FI ISOLatin1Encoding /FiraSans-Italic recode
+/F { findfont exch scalefont setfont } def
+
+% - nl => - move position down and to the left (newline)
+/nl { currentpoint exch pop left exch 10 sub moveto   } def
+/nc { currentpoint exch pop center exch 10 sub moveto } def
+
+% - next => -
+/next {
+    /count count 1 add def
+    count rows columns mul mod 0 eq {
+        showpage
+    } if
+} def
+
+% returns x, y coordinates based on count
+% bottom left is 0,0 cards to the right are (0,1), (0,2), ..
+
+% - coordinates => x y
+/coordinates {
+    count columns mod
+    count columns idiv rows mod
+} def
+
+/crosssize 5 def
+
+% x y cross => draws cross at position
+/cross {
+    gsave
+    translate
+    newpath
+    0.7 setlinewidth
+    0 crosssize 2 div moveto
+    0 crosssize 2 div neg lineto stroke
+    crosssize 2 div neg 0 moveto
+    crosssize 2 div 0 lineto stroke
+    grestore
+} def
+
+% (string) centershow => show string centered on a label
+/centershow {
+    center currentpoint exch pop moveto
+    dup stringwidth pop 2 div neg 0 rmoveto show
+} def
+
+% draws a label card per voucher. The (0,0) origin is at
+% the lower left corner after the translate operation.
+
+% n vskip => - move cursor down by n
+/vskip {
+    0 exch neg rmoveto
+} def
+
+% year id card => -
+/card {
+    6 dict begin
+    gsave
+
+    /id exch 20 string cvs def
+    /year exch 20 string cvs def
+    
+    coordinates
+    /y exch def
+    /x exch def
+
+    lmargin x hgap mul add x hsize mul add
+    bmargin y vgap mul add y vsize mul add
+    translate
+
+    % draw cutmarks at corners of the label
+    cutmarks {
+        grey setcmyk
+        0 0 cross
+        hsize 0 cross
+        hsize vsize cross
+        0 vsize cross
+    } if
+
+    black setcmyk
+    left vsize 2 mm sub 24 sub moveto
+
+    24 /FM F
+    year show (-) show id show nl
+    
+    company setcmyk
+    8 /FR F
+    (K\326PPER & PARTNER) show
+
+    grestore
+    end
+    next % advance counter, emit page if full
+} def
+
+
+% setup page
+<<
+    /Duplex     false
+    /Tumble     false
+    /PageSize   pagedim
+    /ImagingBBox null
+>> setpagedevice
+
+% labels go here
+pages rows columns mul mul
+{ year count start add card } repeat
+%
+% we need this unless the labels fill all pages without any remainders
+count rows columns mul mod 0 ne {
+    showpage
+} if
+
+% vim: fenc=latin1:
+

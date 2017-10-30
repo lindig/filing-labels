@@ -13,6 +13,8 @@ the PostScript file.
 
 ![](labels.png)
 
+For a demo, see file [filing-labels.pdf](filing-labels.pdf).
+
 ## Building
 
 Use `make` to build the PostScript file and from that a PDF.

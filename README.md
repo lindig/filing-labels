@@ -1,5 +1,5 @@
 
-# Print Filing Labels 28mm x 18mm - 45 per DIN A4 page
+# Print Filing Labels
 
 This is a small PostScript program that prints filinig labels 58mm x
 18mm arranged in a table of 3 by 15 labels per DIN A4 page. Each label
@@ -11,9 +11,11 @@ Partner](https://www.schaden-manager.de), an office for insurance loss
 adjustment, but it is easy to change. See the definitions at the top of
 the PostScript file.
 
+![](labels.png)
+
 ## Building
 
-Use `make` to build the PostScript file and from that a PDF. 
+Use `make` to build the PostScript file and from that a PDF.
 
 ## License
 

@@ -13,7 +13,7 @@ all: 		filing-labels.pdf
 
 clean:
 		rm -f fonts.ps 
-		rm -f filing-labels.ps filing-labels.pdf
+		rm -f filing-labels.ps
 
 %.pdf: 		%.ps
 		pstopdf $< || ps2pdf $<
